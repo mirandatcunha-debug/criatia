@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  platforms     Platform[]
+  contents      Content[]
+  aiGenerations AIGeneration[]
+}
+
+model Platform {
+  id           String   @id @default(cuid())
+  type         String
+  username     String
+  accessToken  String?
+  refreshToken String?
+  followers    Int      @default(0)
+  isConnected  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contents     Content[]
+  analytics    Analytics[]
+}
+
+model Content {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  type        String
+  status      String   @default("draft")
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platformId  String?
+  platform    Platform? @relation(fields: [platformId], references: [id])
+}
+
+model Analytics {
+  id          String   @id @default(cuid())
+  date        DateTime
+  views       Int      @default(0)
+  likes       Int      @default(0)
+  comments    Int      @default(0)
+  shares      Int      @default(0)
+  followers   Int      @default(0)
+  createdAt   DateTime @default(now())
+  platformId  String
+  platform    Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+}
+
+model AIGeneration {
+  id        String   @id @default(cuid())
+  type      String
+  prompt    String
+  result    String
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
