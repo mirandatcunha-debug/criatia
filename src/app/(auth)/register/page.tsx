@@ -3,43 +3,43 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowRight, User, Check } from "lucide-react";
+import { Zap, Mail, Lock, Eye, EyeOff, User, CheckCircle, Youtube, Instagram, Music2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    acceptTerms: false,
-  });
-
-  const passwordChecks = {
-    length: formData.password.length >= 8,
-    uppercase: /[A-Z]/.test(formData.password),
-    lowercase: /[a-z]/.test(formData.password),
-    number: /[0-9]/.test(formData.password),
-  };
-
-  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
-  const passwordsMatch = formData.password === formData.confirmPassword && formData.confirmPassword !== "";
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isPasswordValid || !passwordsMatch || !formData.acceptTerms) return;
     setIsLoading(true);
     setError("");
 
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: { data: { name: formData.name } }
+    if (password !== confirmPassword) {
+      setError("As senhas nao coincidem");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!acceptTerms) {
+      setError("Voce precisa aceitar os termos de uso");
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },
+      },
     });
 
     if (error) {
@@ -47,85 +47,183 @@ export default function RegisterPage() {
       setIsLoading(false);
       return;
     }
-    setSuccess(true);
-    setIsLoading(false);
+
+    router.push("/dashboard");
   };
 
-  if (success) {
-    return (
-      <div className="w-full max-w-md">
-        <div className="bg-white dark:bg-dark rounded-2xl shadow-card p-8 text-center">
-          <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="text-success" size={32} />
-          </div>
-          <h1 className="text-2xl font-bold text-dark dark:text-white mb-2">Conta criada!</h1>
-          <p className="text-gray-sec mb-6">Enviamos um link de confirmacao para <strong>{formData.email}</strong></p>
-          <Link href="/login" className="btn btn-primary">Ir para o login</Link>
-        </div>
-      </div>
-    );
-  }
+  const benefits = [
+    "IA para gerar ideias e scripts",
+    "Calendario editorial integrado",
+    "Analytics unificado",
+    "Suporte a YouTube, Instagram e TikTok",
+  ];
 
   return (
-    <div className="w-full max-w-md">
-      <div className="bg-white dark:bg-dark rounded-2xl shadow-card p-8">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-            <Sparkles className="text-white" size={28} />
+    <div className="min-h-screen flex">
+      {/* Left Side - Visual */}
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-fuchsia-600 via-purple-600 to-violet-600 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute top-20 right-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-20 w-96 h-96 bg-violet-400/20 rounded-full blur-3xl"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center w-full p-12 text-white">
+          <h2 className="text-4xl font-bold mb-4">Junte-se a milhares de criadores</h2>
+          <p className="text-xl text-white/80 mb-12 max-w-md">
+            Comece gratis e transforme sua producao de conteudo hoje mesmo
+          </p>
+          
+          {/* Benefits */}
+          <div className="space-y-4 mb-12">
+            {benefits.map((benefit, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                  <CheckCircle size={14} />
+                </div>
+                <span className="text-white/90">{benefit}</span>
+              </div>
+            ))}
           </div>
-          <h1 className="text-2xl font-bold text-dark dark:text-white">Crie sua conta</h1>
-          <p className="text-gray-sec mt-2">Comece a criar conteudo incrivel com IA</p>
+          
+          {/* Platforms */}
+          <div className="flex items-center gap-6">
+            <p className="text-white/60 text-sm">Integrado com:</p>
+            <div className="flex items-center gap-4">
+              <Youtube size={24} className="text-white/60" />
+              <Instagram size={24} className="text-white/60" />
+              <Music2 size={24} className="text-white/60" />
+            </div>
+          </div>
         </div>
+      </div>
 
-        {error && <div className="mb-4 p-3 bg-danger/10 rounded-xl text-danger text-sm">{error}</div>}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-dark dark:text-white mb-2">Nome</label>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-sec" size={18} />
-              <input type="text" placeholder="Seu nome" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full pl-11 pr-4 py-3 bg-gray-section rounded-xl outline-none" required />
+      {/* Right Side - Form */}
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
+        <div className="w-full max-w-md">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 mb-12">
+            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <Zap className="text-white" size={24} />
             </div>
-          </div>
+            <span className="text-2xl font-bold text-gray-800">
+              Criat<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-600">IA</span>
+            </span>
+          </Link>
 
-          <div>
-            <label className="block text-sm font-medium text-dark dark:text-white mb-2">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-sec" size={18} />
-              <input type="email" placeholder="seu@email.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full pl-11 pr-4 py-3 bg-gray-section rounded-xl outline-none" required />
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Crie sua conta</h1>
+          <p className="text-gray-500 mb-8">Comece a criar conteudo incrivel com IA</p>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm">
+              {error}
             </div>
-          </div>
+          )}
 
-          <div>
-            <label className="block text-sm font-medium text-dark dark:text-white mb-2">Senha</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-sec" size={18} />
-              <input type={showPassword ? "text" : "password"} placeholder="********" value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} className="w-full pl-11 pr-12 py-3 bg-gray-section rounded-xl outline-none" required />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-sec">
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Nome</label>
+              <div className="relative">
+                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
+                  placeholder="Seu nome"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-dark dark:text-white mb-2">Confirmar senha</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-sec" size={18} />
-              <input type={showPassword ? "text" : "password"} placeholder="********" value={formData.confirmPassword} onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})} className="w-full pl-11 pr-4 py-3 bg-gray-section rounded-xl outline-none" required />
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" checked={formData.acceptTerms} onChange={(e) => setFormData({...formData, acceptTerms: e.target.checked})} className="w-4 h-4" />
-            <span className="text-sm text-gray-sec">Aceito os termos de uso</span>
-          </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Senha</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
+                  placeholder="********"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
 
-          <button type="submit" disabled={isLoading || !isPasswordValid || !passwordsMatch || !formData.acceptTerms} className="w-full btn btn-primary py-3.5 disabled:opacity-70">
-            {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" /> : "Criar conta"}
-          </button>
-        </form>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Confirmar senha</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all font-medium"
+                  placeholder="********"
+                  required
+                />
+              </div>
+            </div>
 
-        <p className="text-center mt-6 text-gray-sec">Ja tem conta? <Link href="/login" className="text-primary">Fazer login</Link></p>
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 mt-0.5" 
+              />
+              <span className="text-sm text-gray-600">
+                Aceito os{" "}
+                <Link href="#" className="text-purple-600 font-medium hover:text-purple-700">
+                  termos de uso
+                </Link>
+                {" "}e{" "}
+                <Link href="#" className="text-purple-600 font-medium hover:text-purple-700">
+                  politica de privacidade
+                </Link>
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-violet-500 to-purple-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all disabled:opacity-50"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+              ) : "Criar conta"}
+            </button>
+          </form>
+
+          <p className="text-center text-gray-500 mt-8">
+            Ja tem conta?{" "}
+            <Link href="/login" className="text-purple-600 font-semibold hover:text-purple-700">
+              Fazer login
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
