@@ -14,6 +14,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
     "apexcharts": "^3.45.1",
+    "autoprefixer": "^10.4.23",
     "clsx": "^2.1.1",
     "lucide-react": "^0.468.0",
     "next": "14.2.5",
