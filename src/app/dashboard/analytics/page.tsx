@@ -30,10 +30,10 @@ export default function AnalyticsPage() {
   }, [period]);
 
   const metrics = [
-    { title: "Visualizacoes", value: stats.views.toLocaleString(), icon: Eye, color: "text-primary", bg: "bg-primary/10", change: "+12%" },
-    { title: "Curtidas", value: Math.floor(stats.views * 0.08).toLocaleString(), icon: Heart, color: "text-danger", bg: "bg-danger/10", change: "+8%" },
-    { title: "Comentarios", value: Math.floor(stats.views * 0.02).toLocaleString(), icon: MessageCircle, color: "text-warning", bg: "bg-warning/10", change: "+15%" },
-    { title: "Compartilhamentos", value: Math.floor(stats.views * 0.01).toLocaleString(), icon: Share2, color: "text-success", bg: "bg-success/10", change: "+5%" },
+    { title: "Visualizacoes", value: stats.views.toLocaleString(), icon: Eye, gradient: "from-violet-500 to-purple-600", change: "+12%" },
+    { title: "Curtidas", value: Math.floor(stats.views * 0.08).toLocaleString(), icon: Heart, gradient: "from-fuchsia-500 to-pink-600", change: "+8%" },
+    { title: "Comentarios", value: Math.floor(stats.views * 0.02).toLocaleString(), icon: MessageCircle, gradient: "from-amber-500 to-orange-600", change: "+15%" },
+    { title: "Compartilhamentos", value: Math.floor(stats.views * 0.01).toLocaleString(), icon: Share2, gradient: "from-emerald-500 to-green-600", change: "+5%" },
   ];
 
   const weekData = [
@@ -55,72 +55,94 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart3 className="text-primary" /> Analytics
-          </h1>
-          <p className="text-gray-sec mt-1">Acompanhe o desempenho dos seus conteudos</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 rounded-3xl p-8 text-white">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+              <BarChart3 size={32} />
+            </div>
+            <div>
+              <p className="text-white/70 text-sm font-medium tracking-wide uppercase mb-1">Desempenho</p>
+              <h1 className="text-4xl font-bold tracking-tight">Analytics</h1>
+              <p className="text-white/80 mt-2 font-medium">Acompanhe suas metricas</p>
+            </div>
+          </div>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            className="px-5 py-3 bg-white/20 backdrop-blur rounded-xl border border-white/30 text-white font-medium outline-none cursor-pointer"
+          >
+            <option value="7d" className="text-gray-800">Ultimos 7 dias</option>
+            <option value="30d" className="text-gray-800">Ultimos 30 dias</option>
+            <option value="90d" className="text-gray-800">Ultimos 90 dias</option>
+          </select>
         </div>
-        <select
-          value={period}
-          onChange={(e) => setPeriod(e.target.value)}
-          className="px-4 py-2 bg-white rounded-xl border border-gray-200 outline-none"
-        >
-          <option value="7d">Ultimos 7 dias</option>
-          <option value="30d">Ultimos 30 dias</option>
-          <option value="90d">Ultimos 90 dias</option>
-        </select>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Metrics Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         {metrics.map((metric) => (
-          <div key={metric.title} className="bg-white rounded-xl shadow-card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 ${metric.bg} rounded-xl flex items-center justify-center`}>
-                <metric.icon size={20} className={metric.color} />
+          <div key={metric.title} className="bg-white rounded-2xl shadow-card p-6 border border-gray-100 hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-4">
+              <div className={`w-12 h-12 bg-gradient-to-br ${metric.gradient} rounded-2xl flex items-center justify-center shadow-lg`}>
+                <metric.icon size={22} className="text-white" />
               </div>
-              <span className="text-xs text-success font-medium flex items-center gap-1">
-                <TrendingUp size={14} /> {metric.change}
+              <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg flex items-center gap-1">
+                <TrendingUp size={12} /> {metric.change}
               </span>
             </div>
-            <h3 className="text-2xl font-bold">{metric.value}</h3>
-            <p className="text-sm text-gray-sec">{metric.title}</p>
+            <h3 className="text-3xl font-bold text-gray-800">{metric.value}</h3>
+            <p className="text-sm text-gray-500 font-medium mt-1">{metric.title}</p>
           </div>
         ))}
       </div>
 
+      {/* Charts Section */}
       <div className="grid lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl shadow-card p-6">
-          <h2 className="text-lg font-semibold mb-4">Visualizacoes por dia</h2>
-          <div className="flex items-end justify-between h-48 gap-2">
+        {/* Bar Chart */}
+        <div className="bg-white rounded-2xl shadow-card p-6 border border-gray-100">
+          <h2 className="text-lg font-bold text-gray-800 mb-6">Visualizacoes por dia</h2>
+          <div className="flex items-end justify-between h-48 gap-3">
             {weekData.map((data) => (
-              <div key={data.day} className="flex flex-col items-center flex-1">
+              <div key={data.day} className="flex flex-col items-center flex-1 group">
+                <div className="relative w-full flex justify-center mb-2">
+                  <span className="absolute -top-8 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                    {data.views}
+                  </span>
+                </div>
                 <div
-                  className="w-full bg-primary/20 rounded-t-lg hover:bg-primary/40 transition-colors"
+                  className="w-full bg-gradient-to-t from-violet-500 to-purple-400 rounded-t-lg hover:from-violet-600 hover:to-purple-500 transition-all duration-300 cursor-pointer"
                   style={{ height: `${(data.views / maxViews) * 100}%` }}
                 />
-                <span className="text-xs text-gray-sec mt-2">{data.day}</span>
+                <span className="text-xs text-gray-500 font-medium mt-3">{data.day}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-card p-6">
-          <h2 className="text-lg font-semibold mb-4">Top Conteudos</h2>
+        {/* Top Contents */}
+        <div className="bg-white rounded-2xl shadow-card p-6 border border-gray-100">
+          <h2 className="text-lg font-bold text-gray-800 mb-6">Top Conteudos</h2>
           <div className="space-y-4">
             {topContents.map((content, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-gray-section rounded-xl">
-                <div className="flex items-center gap-3">
-                  <span className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold">
+              <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors group">
+                <div className="flex items-center gap-4">
+                  <span className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg ${
+                    i === 0 ? "bg-gradient-to-br from-amber-500 to-orange-600" :
+                    i === 1 ? "bg-gradient-to-br from-slate-400 to-slate-500" :
+                    "bg-gradient-to-br from-amber-600 to-amber-700"
+                  }`}>
                     {i + 1}
                   </span>
-                  <span className="font-medium">{content.title}</span>
+                  <span className="font-semibold text-gray-800 group-hover:text-purple-600 transition-colors">{content.title}</span>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold">{content.views.toLocaleString()}</p>
-                  <p className="text-xs text-gray-sec">{content.engagement} eng.</p>
+                  <p className="font-bold text-gray-800">{content.views.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 font-medium">{content.engagement} eng.</p>
                 </div>
               </div>
             ))}
