@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Zap, Mail, Lock, Eye, EyeOff, Sparkles } from "lucide-react";
+import { Zap, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -34,23 +34,38 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-white">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 mb-12">
-            <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <Zap className="text-white" size={24} />
-            </div>
-            <span className="text-2xl font-bold text-gray-800">
-              Criat<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-purple-600">IA</span>
-            </span>
-          </Link>
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-6 relative"
+      style={{
+        backgroundImage: "url('/images/login-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Overlay escuro para melhorar leitura */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Bem-vindo de volta!</h1>
-          <p className="text-gray-500 mb-8">Entre na sua conta para continuar</p>
+      {/* Conteúdo */}
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
+        <Link href="/" className="flex items-center justify-center gap-3 mb-8">
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <Zap className="text-white" size={24} />
+          </div>
+          <span className="text-2xl font-bold text-white">
+            Criat<span className="text-violet-400">IA</span>
+          </span>
+        </Link>
 
+        {/* Texto centralizado */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">Bom te ver de novo!</h1>
+          <p className="text-white/80 text-lg">Continue sua jornada de criacao</p>
+        </div>
+
+        {/* Card do formulário */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm">
               {error}
@@ -116,46 +131,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-gray-500 mt-8">
+          <p className="text-center text-gray-500 mt-6">
             Nao tem conta?{" "}
             <Link href="/register" className="text-purple-600 font-semibold hover:text-purple-700">
               Cadastre-se gratis
             </Link>
           </p>
-        </div>
-      </div>
-
-      {/* Right Side - Visual */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-fuchsia-400/20 rounded-full blur-3xl"></div>
-        
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur rounded-3xl flex items-center justify-center mb-8">
-            <Sparkles size={40} />
-          </div>
-          <h2 className="text-4xl font-bold text-center mb-4">Crie conteudo incrivel</h2>
-          <p className="text-xl text-white/80 text-center max-w-md">
-            Use o poder da IA para gerar ideias, scripts e hashtags em segundos
-          </p>
-          
-          {/* Stats */}
-          <div className="flex gap-12 mt-12">
-            <div className="text-center">
-              <p className="text-4xl font-bold">10k+</p>
-              <p className="text-white/70">Criadores</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-bold">50k+</p>
-              <p className="text-white/70">Conteudos</p>
-            </div>
-            <div className="text-center">
-              <p className="text-4xl font-bold">98%</p>
-              <p className="text-white/70">Satisfacao</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
