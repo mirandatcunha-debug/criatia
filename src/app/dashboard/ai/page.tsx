@@ -27,7 +27,6 @@ export default function AIPage() {
     setIsLoading(true);
     setResult("");
 
-    // Simulacao de IA (depois vamos conectar com API real)
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const responses: Record<string, string> = {
@@ -86,22 +85,25 @@ Long-tail (baixa concorrencia):
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="animate-fadeIn">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Sparkles className="text-primary" /> IA Assistente
         </h1>
         <p className="text-gray-sec mt-1">Gere ideias, scripts e hashtags com IA</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-card p-6">
+      <div className="bg-white rounded-xl shadow-card p-6 card-hover animate-fadeIn delay-100">
         <div className="flex gap-2 mb-6">
-          {tabs.map((tab) => (
+          {tabs.map((tab, index) => (
             <button
               key={tab.id}
               onClick={() => { setActiveTab(tab.id); setResult(""); }}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                activeTab === tab.id ? "bg-primary text-white" : "bg-gray-section text-gray-sec hover:bg-gray-200"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all animate-fadeIn ${
+                activeTab === tab.id 
+                  ? "bg-primary text-white shadow-lg shadow-primary/30" 
+                  : "bg-gray-section text-gray-sec hover:bg-gray-200"
               }`}
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <tab.icon size={18} />
               {tab.label}
@@ -110,20 +112,20 @@ Long-tail (baixa concorrencia):
         </div>
 
         <div className="space-y-4">
-          <div>
+          <div className="animate-fadeIn delay-300">
             <label className="block text-sm font-medium mb-2">O que voce precisa?</label>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder={placeholders[activeTab]}
-              className="w-full px-4 py-3 bg-gray-section rounded-xl outline-none h-24 resize-none"
+              className="w-full px-4 py-3 bg-gray-section rounded-xl outline-none h-24 resize-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
           </div>
 
           <button
             onClick={generateContent}
             disabled={isLoading || !prompt.trim()}
-            className="btn btn-primary flex items-center gap-2 disabled:opacity-50"
+            className="btn btn-primary btn-hover flex items-center gap-2 disabled:opacity-50 animate-fadeIn delay-400"
           >
             {isLoading ? (
               <>
@@ -139,10 +141,10 @@ Long-tail (baixa concorrencia):
         </div>
 
         {result && (
-          <div className="mt-6 p-4 bg-gray-section rounded-xl relative">
+          <div className="mt-6 p-4 bg-gray-section rounded-xl relative animate-scaleIn">
             <button
               onClick={copyToClipboard}
-              className="absolute top-3 right-3 p-2 hover:bg-gray-200 rounded-lg"
+              className="absolute top-3 right-3 p-2 hover:bg-gray-200 rounded-lg transition-colors"
             >
               {copied ? <Check size={18} className="text-success" /> : <Copy size={18} className="text-gray-sec" />}
             </button>

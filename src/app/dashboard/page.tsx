@@ -14,6 +14,7 @@ export default function DashboardPage() {
     recentContents: [],
   });
   const [userName, setUserName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -23,6 +24,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/stats", { headers: { "x-user-id": user.id } });
       const data = await res.json();
       setStats(data);
+      setIsLoading(false);
     };
     loadData();
   }, []);
@@ -34,38 +36,66 @@ export default function DashboardPage() {
     { title: "Publicados", value: stats.publishedContents, icon: CheckCircle, bg: "bg-success/10", color: "text-success" },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 bg-gray-200 rounded-lg animate-shimmer"></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1,2,3,4].map((i) => (
+            <div key={i} className="bg-white rounded-xl shadow-card p-5 h-24 animate-shimmer"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-fadeIn">
         <div>
-          <h1 className="text-2xl font-bold">Ola, {userName}! </h1>
+          <h1 className="text-2xl font-bold">Ola, {userName}! 👋</h1>
           <p className="text-gray-sec mt-1">Resumo dos seus conteudos</p>
         </div>
-        <Link href="/dashboard/content" className="btn btn-primary flex items-center gap-2">
+        <Link href="/dashboard/content" className="btn btn-primary btn-hover flex items-center gap-2">
           <Plus size={18} /> Novo Conteudo
         </Link>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {cards.map((card) => (
-          <div key={card.title} className="bg-white rounded-xl shadow-card p-5">
-            <p className="text-sm text-gray-sec">{card.title}</p>
+        {cards.map((card, index) => (
+          <div 
+            key={card.title} 
+            className={`bg-white rounded-xl shadow-card p-5 card-hover animate-fadeIn`}
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className={`w-10 h-10 ${card.bg} rounded-xl flex items-center justify-center`}>
+                <card.icon size={20} className={card.color} />
+              </div>
+            </div>
             <h3 className="text-3xl font-bold mt-1">{card.value}</h3>
+            <p className="text-sm text-gray-sec">{card.title}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-card p-6">
+      <div className="bg-white rounded-xl shadow-card p-6 card-hover animate-fadeIn delay-500">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Ultimos Conteudos</h2>
-          <Link href="/dashboard/content" className="text-primary text-sm">Ver todos</Link>
+          <Link href="/dashboard/content" className="text-primary text-sm flex items-center gap-1 hover:gap-2 transition-all">
+            Ver todos <ArrowRight size={16} />
+          </Link>
         </div>
         {stats.recentContents.length === 0 ? (
           <p className="text-gray-sec text-center py-8">Nenhum conteudo ainda</p>
         ) : (
           <div className="space-y-3">
-            {stats.recentContents.map((content: any) => (
-              <div key={content.id} className="flex items-center justify-between p-3 bg-gray-section rounded-xl">
+            {stats.recentContents.map((content: any, index: number) => (
+              <div 
+                key={content.id} 
+                className="flex items-center justify-between p-3 bg-gray-section rounded-xl hover:bg-gray-200 transition-colors animate-slideIn"
+                style={{ animationDelay: `${(index + 5) * 100}ms` }}
+              >
                 <span className="font-medium">{content.title}</span>
                 <span className="text-xs bg-gray-200 px-2 py-1 rounded">{content.status}</span>
               </div>
