@@ -10,60 +10,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Cores do template Geex
         primary: {
-          DEFAULT: "#AB54DB",
-          light: "#AB54DB26",
+          DEFAULT: "#8B5CF6",
+          light: "#A78BFA",
+          dark: "#7C3AED",
         },
-        secondary: "#B7DBF9",
-        dark: {
-          DEFAULT: "#17161E",
-          body: "#464255",
-          desc: "#3B3741",
+        secondary: {
+          DEFAULT: "#EC4899",
+          light: "#F472B6",
+          dark: "#DB2777",
         },
-        gray: {
-          sec: "#A3A3A3",
-          100: "#ECEAF3",
-          200: "#D0D6DE",
-          300: "#B9BBBD",
-          section: "#F3F2F7",
-          sectionTwo: "#F5F4F9",
-          sectionThree: "#fcfcfc",
+        accent: {
+          DEFAULT: "#F59E0B",
+          light: "#FBBF24",
+          dark: "#D97706",
         },
-        success: {
-          DEFAULT: "#00A389",
-          light: "#2ED6A326",
-        },
-        warning: {
-          DEFAULT: "#FFBB54",
-          light: "#FFBB5426",
-        },
-        danger: {
-          DEFAULT: "#FF5B5B",
-          light: "#FF5B5B26",
-        },
-        info: {
-          DEFAULT: "#58CDFF",
-          light: "#58CDFF26",
-        },
-        pink: "#ff68b5",
-        tertiary: "#EF9A91",
-        quaternary: "#F1E6B9",
+        success: "#10B981",
+        warning: "#F59E0B",
+        danger: "#EF4444",
+        dark: "#1F2937",
+        "gray-sec": "#6B7280",
+        "gray-section": "#F3F4F6",
       },
-      fontFamily: {
-        sans: ["Poppins", "sans-serif"],
+      backgroundImage: {
+        "gradient-primary": "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
+        "gradient-secondary": "linear-gradient(135deg, #EC4899 0%, #F59E0B 100%)",
+        "gradient-accent": "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
+        "gradient-dark": "linear-gradient(135deg, #1F2937 0%, #374151 100%)",
+        "gradient-card": "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
       },
       boxShadow: {
-        card: "0px 4px 20px rgba(0, 0, 0, 0.05)",
-        sidebar: "0px 0px 20px rgba(0, 0, 0, 0.05)",
-      },
-      borderRadius: {
-        xl: "12px",
-        "2xl": "16px",
+        card: "0 4px 20px -2px rgba(0, 0, 0, 0.08)",
+        "card-hover": "0 12px 28px -4px rgba(139, 92, 246, 0.25)",
+        glow: "0 0 20px rgba(139, 92, 246, 0.4)",
+        "glow-pink": "0 0 20px rgba(236, 72, 153, 0.4)",
       },
     },
   },
   plugins: [],
 };
-
 export default config;
