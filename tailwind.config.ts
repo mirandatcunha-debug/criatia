@@ -9,6 +9,10 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sora)", "system-ui", "sans-serif"],
+        heading: ["var(--font-sora)", "system-ui", "sans-serif"],
+      },
       colors: {
         primary: {
           DEFAULT: "#8B5CF6",
@@ -36,8 +40,6 @@ const config: Config = {
         "gradient-primary": "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
         "gradient-secondary": "linear-gradient(135deg, #EC4899 0%, #F59E0B 100%)",
         "gradient-accent": "linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)",
-        "gradient-dark": "linear-gradient(135deg, #1F2937 0%, #374151 100%)",
-        "gradient-card": "linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)",
       },
       boxShadow: {
         card: "0 4px 20px -2px rgba(0, 0, 0, 0.08)",
